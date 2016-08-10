@@ -39,6 +39,18 @@ export function lazyLoad(path) {
 }
 ```
 
+### Programmatic Usage
+
+```javascript
+var NodeESModuleLoader = require('node-es-module-loader');
+
+var loaaer = new NodeESModuleLoader(process.cwd());
+
+loader.import('x').then(function(m) {
+  // ...
+});
+```
+
 ## Caveats
 
 - Does not currently support the "module" package.json proposal described in the second paragraph at 
