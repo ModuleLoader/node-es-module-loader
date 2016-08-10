@@ -18,6 +18,7 @@
     "rollup-plugin-node-resolve": "^2.0.0"
   },
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepublish": "rollup -c"
   }
 }
