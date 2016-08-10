@@ -13,7 +13,7 @@ function NodeBabelLoader(baseKey) {
   if (!isNode)
     throw new Error('Node module loader can only be used in Node');
 
-  baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || baseKey;
+  baseKey = resolveUrlToParentIfNotPlain(baseKey || process.cwd(), baseURI) || baseKey;
   RegisterLoader.call(this, baseKey);
 
   var loader = this;
