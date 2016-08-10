@@ -8,7 +8,31 @@ This effectively provides the "export {}" assumption to load an ES module.
 
 Built with the ES Module Loader polyfill 1.0 branch at https://github.com/ModuleLoader/es-module-loader.
 
-Caveats:
+### Installation
+
+```
+npm install -g node-es-module-loader
+```
+
+### Usage
+
+Execute an ES module file:
+
+```
+node-esml module.js
+```
+
+For example, where `module.js` contains:
+
+```javascript
+import fs from 'fs';
+import {fn} from './local-es-module.js';
+```
+
+Note that only the default import form for CommonJS modules is supported.
+
+## Caveats
+
 - Does not currently support the "module" package.json proposal described in the second paragraph at 
   https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md#51-determining-if-source-is-an-es-module
 - Does not allow any loading of ES modules from within CommonJS itself
