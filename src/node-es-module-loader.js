@@ -9,7 +9,7 @@ var babel = require('babel-core');
 var path = require('path');
 var Module = require('module');
 
-function NodeBabelLoader(baseKey) {
+function NodeESModuleLoader(baseKey) {
   if (!isNode)
     throw new Error('Node module loader can only be used in Node');
 
@@ -24,13 +24,13 @@ function NodeBabelLoader(baseKey) {
     loader.register.apply(loader, arguments);
   };
 }
-NodeBabelLoader.prototype = Object.create(RegisterLoader.prototype);
+NodeESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 var processCwdRequireContext = new Module(process.cwd());
 processCwdRequireContext.paths = Module._nodeModulePaths(process.cwd());
 
 // normalize is never given a relative name like "./x", that part is already handled
-NodeBabelLoader.prototype.normalize = function(key, parent, metadata) {
+NodeESModuleLoader.prototype.normalize = function(key, parent, metadata) {
   var resolved = Module._resolveFilename(key.substr(0, 5) === 'file:' ? fileUrlToPath(key) : key, processCwdRequireContext, true);
 
   // core modules are returned as plain non-absolute paths
@@ -39,7 +39,7 @@ NodeBabelLoader.prototype.normalize = function(key, parent, metadata) {
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-NodeBabelLoader.prototype.instantiate = function(key, metadata) {
+NodeESModuleLoader.prototype.instantiate = function(key, metadata) {
   var loader = this;
 
   // first, try to load the module as CommonJS
@@ -88,4 +88,4 @@ function tryNodeLoad(path) {
   }
 }
 
-export default NodeBabelLoader;
+export default NodeESModuleLoader;
