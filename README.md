@@ -31,6 +31,14 @@ import {fn} from './local-es-module.js';
 
 Note that only the default import form for CommonJS modules is supported.
 
+Also supports dynamic loading via a `loader` global (note that this will change in future when the dynamic loader spec is available);
+
+```javascript
+export function lazyLoad(path) {
+  return loader.import(path);
+}
+```
+
 ## Caveats
 
 - Does not currently support the "module" package.json proposal described in the second paragraph at 
