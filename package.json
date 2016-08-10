@@ -13,6 +13,7 @@
   "author": "Guy Bedford",
   "license": "MIT",
   "devDependencies": {
+    "es-module-loader": "github:moduleloader/es-module-loader#1.0",
     "rollup": "^0.34.7",
     "rollup-plugin-node-resolve": "^2.0.0"
   },
