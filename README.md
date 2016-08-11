@@ -11,7 +11,7 @@ Built with the ES Module Loader polyfill 1.0 branch at https://github.com/Module
 ### Installation
 
 ```
-npm install -g node-es-module-loader
+npm install node-es-module-loader
 ```
 
 ### Usage
@@ -19,7 +19,7 @@ npm install -g node-es-module-loader
 Execute an ES module file:
 
 ```
-node-esml module.js
+node_modules/.bin/node-esml module.js
 ```
 
 For example, where `module.js` contains:
@@ -37,6 +37,12 @@ Also supports dynamic loading via a `loader` global (note that this will change 
 export function lazyLoad(path) {
   return loader.import(path);
 }
+```
+
+Source maps also work in Node 6 with the `node --inspect` flag via:
+
+```
+node --inspect node_modules/.bin/node-esml module.js
 ```
 
 ### Programmatic Usage
