@@ -67,7 +67,7 @@ NodeESModuleLoader.prototype.instantiate = function(key, metadata) {
       // evaluate without require, exports and module variables
       // we leave module in for now to allow module.require access
       eval('var require,exports;' + output.code + '\n//# sourceURL=' + key + '!transpiled');
-      loader.processRegisterQueue(key);
+      loader.processRegisterContext(key);
       
       resolve();
     }, reject);
