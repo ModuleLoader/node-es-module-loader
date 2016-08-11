@@ -44,7 +44,7 @@ export function lazyLoad(path) {
 ```javascript
 var NodeESModuleLoader = require('node-es-module-loader');
 
-var loaaer = new NodeESModuleLoader(/* optional basePath */);
+var loader = new NodeESModuleLoader(/* optional basePath */);
 
 loader.import('x').then(function(m) {
   // ...
