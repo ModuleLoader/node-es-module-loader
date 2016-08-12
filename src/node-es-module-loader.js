@@ -3,11 +3,11 @@ import { InternalModuleNamespace as ModuleNamespace } from 'es-module-loader/cor
 
 import { isNode, baseURI, pathToFileUrl, fileUrlToPath } from 'es-module-loader/core/common.js';
 import { resolveUrlToParentIfNotPlain } from 'es-module-loader/core/resolve.js';
-import { nodeFetch } from 'es-module-loader/core/fetch.js';
 
 var babel = require('babel-core');
 var path = require('path');
 var Module = require('module');
+var fs = require('fs');
 
 function NodeESModuleLoader(baseKey) {
   if (!isNode)
@@ -52,7 +52,9 @@ NodeESModuleLoader.prototype.instantiate = function(key, metadata) {
 
   // otherwise, load as ES with Babel converting into System.register
   return new Promise(function(resolve, reject) {
-    nodeFetch(key, undefined, function(source) {
+    fs.readFile(fileUrlToPath(key), function(err, source) {
+      if (err)
+        return reject(err);
 
       // transform source with Babel
       var output = babel.transform(source, {
@@ -65,12 +67,11 @@ NodeESModuleLoader.prototype.instantiate = function(key, metadata) {
       });
 
       // evaluate without require, exports and module variables
-      // we leave module in for now to allow module.require access
-      eval('var require,exports;' + output.code + '\n//# sourceURL=' + fileUrlToPath(key) + '!transpiled');
+      (0,eval)(output.code + '\n//# sourceURL=' + fileUrlToPath(key) + '!transpiled');
       loader.processRegisterContext(key);
       
       resolve();
-    }, reject);
+    });
   });
 };
 
