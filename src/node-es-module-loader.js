@@ -31,10 +31,13 @@ processCwdRequireContext.paths = Module._nodeModulePaths(process.cwd());
 
 // normalize is never given a relative name like "./x", that part is already handled
 NodeESModuleLoader.prototype.normalize = function(key, parent, metadata) {
-  var resolved = Module._resolveFilename(key.substr(0, 5) === 'file:' ? fileUrlToPath(key) : key, processCwdRequireContext, true);
+  return Promise.resolve()
+  .then(function() {
+    var resolved = Module._resolveFilename(key.substr(0, 5) === 'file:' ? fileUrlToPath(key) : key, processCwdRequireContext, true);
 
-  // core modules are returned as plain non-absolute paths
-  return path.isAbsolute(resolved) ? pathToFileUrl(resolved) : resolved;
+    // core modules are returned as plain non-absolute paths
+    return path.isAbsolute(resolved) ? pathToFileUrl(resolved) : resolved;
+  });
 };
 
 // instantiate just needs to run System.register
