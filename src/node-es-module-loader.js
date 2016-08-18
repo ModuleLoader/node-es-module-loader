@@ -31,6 +31,8 @@ processCwdRequireContext.paths = Module._nodeModulePaths(process.cwd());
 
 // normalize is never given a relative name like "./x", that part is already handled
 NodeESModuleLoader.prototype.normalize = function(key, parent, metadata) {
+  key = RegisterLoader.prototype.normalize.call(this, key, parent, metadata) || key;
+
   return Promise.resolve()
   .then(function() {
     var resolved = Module._resolveFilename(key.substr(0, 5) === 'file:' ? fileUrlToPath(key) : key, processCwdRequireContext, true);
