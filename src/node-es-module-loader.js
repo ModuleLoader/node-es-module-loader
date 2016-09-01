@@ -30,7 +30,7 @@ var processCwdRequireContext = new Module(process.cwd());
 processCwdRequireContext.paths = Module._nodeModulePaths(process.cwd());
 
 // normalize is never given a relative name like "./x", that part is already handled
-NodeESModuleLoader.prototype.normalize = function(key, parent, metadata) {
+NodeESModuleLoader.prototype[RegisterLoader.normalize] = function(key, parent, metadata) {
   key = RegisterLoader.prototype.normalize.call(this, key, parent, metadata) || key;
 
   return Promise.resolve()
@@ -44,7 +44,7 @@ NodeESModuleLoader.prototype.normalize = function(key, parent, metadata) {
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-NodeESModuleLoader.prototype.instantiate = function(key, metadata) {
+NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata) {
   var loader = this;
 
   // first, try to load the module as CommonJS
