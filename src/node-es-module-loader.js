@@ -13,11 +13,13 @@ function NodeESModuleLoader(baseKey) {
   if (!isNode)
     throw new Error('Node module loader can only be used in Node');
 
-  baseKey = resolveUrlToParentIfNotPlain(baseKey || process.cwd(), baseURI) || baseKey;
+  if (baseKey)
+    baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || resolveUrlToParentIfNotPlain('./' + baseKey, baseURI);
+
   RegisterLoader.call(this, baseKey);
 
   var loader = this;
-  
+
   // ensure System.register is available
   global.System = global.System || {};
   global.System.register = function() {
@@ -74,7 +76,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
       // evaluate without require, exports and module variables
       (0,eval)(output.code + '\n//# sourceURL=' + fileUrlToPath(key) + '!transpiled');
       loader.processRegisterContext(key);
-      
+
       resolve();
     });
   });
@@ -85,8 +87,8 @@ function tryNodeLoad(path) {
     return require(path);
   }
   catch(e) {
-    if (e instanceof SyntaxError && 
-        (e.message.indexOf('Unexpected token export') !== -1 || 
+    if (e instanceof SyntaxError &&
+        (e.message.indexOf('Unexpected token export') !== -1 ||
         e.message.indexOf('Unexpected token import') !== -1 ||
         e.message.indexOf('Unexpected reserved word') !== -1))
       return;
