@@ -9,12 +9,18 @@ var path = require('path');
 var Module = require('module');
 var fs = require('fs');
 
-function NodeESModuleLoader(baseKey) {
+function NodeESModuleLoader(baseKey, rcPath) {
   if (!isNode)
     throw new Error('Node module loader can only be used in Node');
 
   if (baseKey)
     baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || resolveUrlToParentIfNotPlain('./' + baseKey, baseURI);
+
+  if (rcPath) {
+    if (typeof rcPath !== 'string')
+      throw new TypeError('Second argument to Node loader must be a valid file path to the babelrc file.');
+    this.rcPath = rcPath;
+  }
 
   RegisterLoader.call(this, baseKey);
 
@@ -70,7 +76,8 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
         sourceFileName: key,
         moduleIds: false,
         sourceMaps: 'inline',
-        plugins: [require('babel-plugin-transform-es2015-modules-systemjs')]
+        plugins: [require('babel-plugin-transform-es2015-modules-systemjs')],
+        extends: this.rcPath
       });
 
       // evaluate without require, exports and module variables
