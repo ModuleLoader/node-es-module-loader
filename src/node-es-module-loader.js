@@ -34,16 +34,16 @@ function NodeESModuleLoader(baseKey, rcPath) {
 }
 NodeESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
-var processCwdRequireContext = new Module(process.cwd());
-processCwdRequireContext.paths = Module._nodeModulePaths(process.cwd());
-
 // normalize is never given a relative name like "./x", that part is already handled
 NodeESModuleLoader.prototype[RegisterLoader.normalize] = function(key, parent, metadata) {
   key = RegisterLoader.prototype.normalize.call(this, key, parent, metadata) || key;
 
   return Promise.resolve()
   .then(function() {
-    var resolved = Module._resolveFilename(key.substr(0, 5) === 'file:' ? fileUrlToPath(key) : key, processCwdRequireContext, true);
+    var parentPath = fileUrlToPath(parent);
+    var requireContext = new Module(parentPath);
+    requireContext.paths = Module._nodeModulePaths(parentPath);
+    var resolved = Module._resolveFilename(key.substr(0, 5) === 'file:' ? fileUrlToPath(key) : key, requireContext, true);
 
     // core modules are returned as plain non-absolute paths
     return path.isAbsolute(resolved) ? pathToFileUrl(resolved) : resolved;
@@ -77,7 +77,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
         moduleIds: false,
         sourceMaps: 'inline',
         plugins: [require('babel-plugin-transform-es2015-modules-systemjs')],
-        extends: this.rcPath
+        extends: loader.rcPath
       });
 
       // evaluate without require, exports and module variables
