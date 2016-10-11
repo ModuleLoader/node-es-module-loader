@@ -50,6 +50,8 @@ NodeESModuleLoader.prototype[RegisterLoader.normalize] = function(key, parent, m
   });
 };
 
+var PROCESS_REGISTER_CONTEXT = RegisterLoader.processRegisterContext;
+
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
 NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata) {
@@ -82,7 +84,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
 
       // evaluate without require, exports and module variables
       (0,eval)(output.code + '\n//# sourceURL=' + fileUrlToPath(key) + '!transpiled');
-      loader.processRegisterContext(key);
+      loader[PROCESS_REGISTER_CONTEXT](key);
 
       resolve();
     });
