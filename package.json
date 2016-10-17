@@ -15,7 +15,8 @@
   "devDependencies": {
     "es-module-loader": "^1.2.0",
     "rollup": "^0.34.7",
-    "rollup-plugin-node-resolve": "^2.0.0"
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "source-map-support": "^0.4.4"
   },
   "scripts": {
     "build": "rollup -c",

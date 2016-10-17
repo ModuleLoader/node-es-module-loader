@@ -9,6 +9,20 @@ var path = require('path');
 var Module = require('module');
 var fs = require('fs');
 
+var sourceMapSources = global.nodeEsModuleLoaderSourceMapSources = global.nodeEsModuleLoaderSourceMapSources || {};
+
+require('source-map-support').install({
+  retrieveSourceMap: function(source) {
+    if (!sourceMapSources[source])
+      return null;
+
+    return {
+      url: source.replace('!transpiled', ''),
+      map: sourceMapSources[source]
+    };
+  }
+});
+
 function NodeESModuleLoader(baseKey, rcPath) {
   if (!isNode)
     throw new Error('Node module loader can only be used in Node');
@@ -50,7 +64,7 @@ NodeESModuleLoader.prototype[RegisterLoader.normalize] = function(key, parent, m
   });
 };
 
-var PROCESS_REGISTER_CONTEXT = RegisterLoader.processRegisterContext;
+var PROCESS_REGISTER_CONTEXT = RegisterLoader.processRegisterContext || 'processRegisterContext';
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
@@ -77,13 +91,15 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
         filename: key + '!transpiled',
         sourceFileName: key,
         moduleIds: false,
-        sourceMaps: 'inline',
+        sourceMaps: true,
         plugins: [require('babel-plugin-transform-es2015-modules-systemjs')],
         extends: loader.rcPath
       });
 
       // evaluate without require, exports and module variables
-      (0,eval)(output.code + '\n//# sourceURL=' + fileUrlToPath(key) + '!transpiled');
+      var path = fileUrlToPath(key) + '!transpiled';
+      sourceMapSources[path] = output.map;
+      (0,eval)(output.code + '\n//# sourceURL=' + path);
       loader[PROCESS_REGISTER_CONTEXT](key);
 
       resolve();
