@@ -98,6 +98,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
 
       // evaluate without require, exports and module variables
       var path = fileUrlToPath(key) + '!transpiled';
+      output.map.sources = output.map.sources.map(fileUrlToPath);
       sourceMapSources[path] = output.map;
       (0,eval)(output.code + '\n//# sourceURL=' + path);
       loader[PROCESS_REGISTER_CONTEXT](key);
