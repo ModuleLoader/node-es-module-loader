@@ -91,7 +91,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
         filename: key + '!transpiled',
         sourceFileName: key,
         moduleIds: false,
-        sourceMaps: true,
+        sourceMaps: 'both',
         plugins: [require('babel-plugin-transform-es2015-modules-systemjs')],
         extends: loader.rcPath
       });
