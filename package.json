@@ -1,6 +1,6 @@
 {
   "name": "node-es-module-loader",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "Loads ES modules with CJS interop in Node",
   "main": "dist/node-es-module-loader.js",
   "bin": {
@@ -13,7 +13,7 @@
   "author": "Guy Bedford",
   "license": "MIT",
   "devDependencies": {
-    "es-module-loader": "^1.2.0",
+    "es-module-loader": "^1.3.0",
     "rollup": "^0.34.7",
     "rollup-plugin-node-resolve": "^2.0.0",
     "source-map-support": "^0.4.4"

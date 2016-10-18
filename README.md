@@ -39,6 +39,8 @@ export function lazyLoad(path) {
 }
 ```
 
+Source maps for errors are fully supported through the [source-map-support project](https://github.com/evanw/node-source-map-support).
+
 Source maps also work in Node 6 with the `node --inspect` flag via:
 
 ```
@@ -59,14 +61,14 @@ loader.import('x').then(function(m) {
 
 ## Caveats
 
-- Does not currently support the "module" package.json proposal described in the second paragraph at 
+- Does not currently support the "module" package.json proposal described in the second paragraph at
   https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md#51-determining-if-source-is-an-es-module
 - Does not allow any loading of ES modules from within CommonJS itself
-- Does not implement global require filtering described in 
+- Does not implement global require filtering described in
   https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md#521-removal-of-non-local-dependencies
 - Does not provide CJS exports as named exports, skipping the algorithm defined in
   https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md#311-dynamicmodulecreateo
-  this may change, pending Node implementation intentions 
+  this may change, pending Node implementation intentions
 
 Alternative Babel options can be set with a local .babelrc file.
 
