@@ -49,8 +49,8 @@ function NodeESModuleLoader(baseKey, rcPath) {
 NodeESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 // normalize is never given a relative name like "./x", that part is already handled
-NodeESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent, metadata) {
-  key = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent, metadata) || key;
+NodeESModuleLoader.prototype[RegisterLoader.normalize] = function(key, parent, metadata) {
+  key = RegisterLoader.prototype.normalize.call(this, key, parent, metadata) || key;
 
   return Promise.resolve()
   .then(function() {
