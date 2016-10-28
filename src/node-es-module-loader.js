@@ -64,11 +64,9 @@ NodeESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent, met
   });
 };
 
-var PROCESS_REGISTER_CONTEXT = RegisterLoader.processRegisterContext || 'processRegisterContext';
-
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata) {
+NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata, processAnonRegister) {
   var loader = this;
 
   // first, try to load the module as CommonJS
@@ -101,7 +99,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
       output.map.sources = output.map.sources.map(fileUrlToPath);
       sourceMapSources[path] = output.map;
       (0,eval)(output.code + '\n//# sourceURL=' + path);
-      loader[PROCESS_REGISTER_CONTEXT](key);
+      processAnonRegister();
 
       resolve();
     });
