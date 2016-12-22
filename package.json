@@ -1,6 +1,6 @@
 {
   "name": "node-es-module-loader",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Loads ES modules with CJS interop in Node",
   "main": "dist/node-es-module-loader.js",
   "bin": {
@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "babel-core": "^6.17.0",
-    "babel-plugin-transform-es2015-modules-systemjs": "^6.14.0"
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-es2015-modules-systemjs": "^6.19.0"
   },
   "author": "Guy Bedford",
   "license": "MIT",

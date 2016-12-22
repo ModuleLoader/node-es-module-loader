@@ -31,11 +31,11 @@ import {fn} from './local-es-module.js';
 
 Note that only the default import form for CommonJS modules is supported.
 
-Also supports dynamic loading via a `loader` global (note that this will change in future when the dynamic loader spec is available);
+Also supports dynamic loading via the dynamic import syntax:
 
 ```javascript
 export function lazyLoad(path) {
-  return loader.import(path);
+  return import(path);
 }
 ```
 

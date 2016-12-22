@@ -1,10 +1,12 @@
 import RegisterLoader from 'es-module-loader/core/register-loader.js';
-import { InternalModuleNamespace as ModuleNamespace } from 'es-module-loader/core/loader-polyfill.js';
+import { ModuleNamespace } from 'es-module-loader/core/loader-polyfill.js';
 
 import { isNode, baseURI, pathToFileUrl, fileUrlToPath } from 'es-module-loader/core/common.js';
-import { resolveUrlToParentIfNotPlain } from 'es-module-loader/core/resolve.js';
+import { resolveIfNotPlain } from 'es-module-loader/core/resolve.js';
 
 var babel = require('babel-core');
+var modulesRegister = require('babel-plugin-transform-es2015-modules-systemjs');
+var importSyntax = require('babel-plugin-syntax-dynamic-import');
 var path = require('path');
 var Module = require('module');
 var fs = require('fs');
@@ -28,7 +30,7 @@ function NodeESModuleLoader(baseKey, rcPath) {
     throw new Error('Node module loader can only be used in Node');
 
   if (baseKey)
-    baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || resolveUrlToParentIfNotPlain('./' + baseKey, baseURI);
+    baseKey = resolveIfNotPlain(baseKey, baseURI) || resolveIfNotPlain('./' + baseKey, baseURI);
 
   if (rcPath) {
     if (typeof rcPath !== 'string')
@@ -49,8 +51,9 @@ function NodeESModuleLoader(baseKey, rcPath) {
 NodeESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 // normalize is never given a relative name like "./x", that part is already handled
-NodeESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent, metadata) {
-  key = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent, metadata) || key;
+NodeESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent) {
+  parent = parent || baseURI;
+  key = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent) || key;
 
   return Promise.resolve()
   .then(function() {
@@ -66,7 +69,7 @@ NodeESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent, met
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata, processAnonRegister) {
+NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, processAnonRegister) {
   var loader = this;
 
   // first, try to load the module as CommonJS
@@ -90,7 +93,7 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadat
         sourceFileName: key,
         moduleIds: false,
         sourceMaps: 'both',
-        plugins: [require('babel-plugin-transform-es2015-modules-systemjs')],
+        plugins: [importSyntax, modulesRegister],
         extends: loader.rcPath
       });
 
