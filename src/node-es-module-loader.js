@@ -30,7 +30,12 @@ function NodeESModuleLoader(baseKey, rcPath) {
     throw new Error('Node module loader can only be used in Node');
 
   if (baseKey)
-    baseKey = resolveIfNotPlain(baseKey, baseURI) || resolveIfNotPlain('./' + baseKey, baseURI);
+    this.baseKey = resolveIfNotPlain(baseKey, baseURI) || resolveIfNotPlain('./' + baseKey, baseURI);
+  else
+    this.baseKey = baseURI;
+
+  if (this.baseKey[this.baseKey.length - 1] !== '/')
+    this.baseKey += '/';
 
   if (rcPath) {
     if (typeof rcPath !== 'string')
@@ -38,7 +43,7 @@ function NodeESModuleLoader(baseKey, rcPath) {
     this.rcPath = rcPath;
   }
 
-  RegisterLoader.call(this, baseKey);
+  RegisterLoader.call(this);
 
   var loader = this;
 
@@ -52,7 +57,7 @@ NodeESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 // normalize is never given a relative name like "./x", that part is already handled
 NodeESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent) {
-  parent = parent || baseURI;
+  parent = parent || this.baseKey;
   key = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent) || key;
 
   return Promise.resolve()
