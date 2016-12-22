@@ -11,7 +11,7 @@ Built with the ES Module Loader polyfill 1.0 branch at https://github.com/Module
 ### Installation
 
 ```
-npm install node-es-module-loader
+npm install -g node-es-module-loader
 ```
 
 ### Usage
@@ -19,7 +19,7 @@ npm install node-es-module-loader
 Execute an ES module file:
 
 ```
-node_modules/.bin/node-esml module.js
+node-esml module.js
 ```
 
 For example, where `module.js` contains:
