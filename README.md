@@ -3,6 +3,8 @@ NodeJS ES Module Loader
 
 Loads ES modules and WebAssembly with CJS interop in Node, roughly according to https://github.com/nodejs/node-eps/blob/master/002-es6-modules.md.
 
+_WASM support is currently only provided for Node 8 nightly._
+
 Follows the NodeJS resolution algorithm, loading modules first as CJS and then falling back to ES on import or export syntax failures.
 This effectively provides the "export {}" assumption to load an ES module.
 
@@ -43,12 +45,6 @@ export function lazyLoad(path) {
 ```
 
 Source maps for errors are fully supported through the [source-map-support project](https://github.com/evanw/node-source-map-support).
-
-Wasm requires running with the `--expose-wasm` flag in Node currently (currently supporting Node 8 nightly only):
-
-```
-node --expose-wasm node_modules/.bin/node-esml module.js
-```
 
 Source maps also work in Node 6 with the `node --inspect` flag via:
 
