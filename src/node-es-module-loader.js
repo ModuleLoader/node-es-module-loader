@@ -85,14 +85,43 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, process
       default: nodeModule
     }));
 
-  // otherwise, load as ES with Babel converting into System.register
+  // otherwise load the buffe
   return new Promise(function(resolve, reject) {
-    fs.readFile(fileUrlToPath(key), function(err, source) {
+    fs.readFile(fileUrlToPath(key), function(err, buffer) {
       if (err)
         return reject(err);
 
-      // transform source with Babel
-      var output = babel.transform(source, {
+      // first check if it is web assembly, detected by leading bytes
+      var bytes = new Uint8Array(buffer);
+      if (bytes[0] === 0 && bytes[1] === 97 && bytes[2] === 115) {
+        return WebAssembly.compile(bytes).then(function (m) {
+          var deps = [];
+          var setters = [];
+          var importObj = {};
+          if (WebAssembly.Module.imports)
+            WebAssembly.Module.imports(m).forEach(function (i) {
+              var key = i.module;
+              setters.push(function (m) {
+                importObj[key] = m;
+              });
+              if (deps.indexOf(key) === -1)
+                deps.push(key);
+            });
+          loader.register(deps, function (_export) {
+            return {
+              setters: setters,
+              execute: function () {
+                _export(new WebAssembly.Instance(m, importObj).exports);
+              }
+            };
+          });
+          processAnonRegister();
+        })
+        .then(resolve, reject);
+      }
+
+      // otherwise fall back to transform source with Babel
+      var output = babel.transform(buffer.toString(), {
         compact: false,
         filename: key + '!transpiled',
         sourceFileName: key,
@@ -122,7 +151,8 @@ function tryNodeLoad(path) {
     if (e instanceof SyntaxError &&
         (e.message.indexOf('Unexpected token export') !== -1 ||
         e.message.indexOf('Unexpected token import') !== -1 ||
-        e.message.indexOf('Unexpected reserved word') !== -1))
+        e.message.indexOf('Unexpected reserved word') !== -1) ||
+        e.message.indexOf('Invalid or unexpected token') !== -1)
       return;
     throw e;
   }
