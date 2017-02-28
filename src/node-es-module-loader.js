@@ -111,7 +111,14 @@ NodeESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, process
             return {
               setters: setters,
               execute: function () {
-                _export(new WebAssembly.Instance(m, importObj).exports);
+                // for some reason exports are non-enumarable in the node build
+                // which seems to contradict the WASM spec
+                let exports = new WebAssembly.Instance(m, importObj).exports;
+                let exportNames = Object.getOwnPropertyNames(exports);
+                for (var i = 0; i < exportNames.length; i++) {
+                  var name = exportNames[i];
+                  _export(name, exports[name]);
+                }
               }
             };
           });
