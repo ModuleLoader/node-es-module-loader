@@ -1,4 +1,4 @@
-#!/usr/bin/env node --expose-wasm
+#!/usr/bin/env node
 var LoaderNodeBabel = require('../dist/node-es-module-loader.js');
 var path = require('path');
 
