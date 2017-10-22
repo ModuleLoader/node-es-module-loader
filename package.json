@@ -12,6 +12,10 @@
     "babel-plugin-transform-es2015-modules-systemjs": "^6.19.0"
   },
   "author": "Guy Bedford",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ModuleLoader/node-es-module-loader"
+  },
   "license": "MIT",
   "devDependencies": {
     "es-module-loader": "^2.0.0",
